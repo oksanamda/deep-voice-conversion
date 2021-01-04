@@ -1,8 +1,3 @@
-# -*- coding: utf-8 -*-
-# /usr/bin/python2
-
-from __future__ import print_function
-
 import argparse
 import multiprocessing
 import os
@@ -11,7 +6,7 @@ from tensorpack.callbacks.saver import ModelSaver
 from tensorpack.tfutils.sessinit import SaverRestore
 from tensorpack.train.interface import TrainConfig
 from tensorpack.train.interface import launch_train_with_config
-from tensorpack.train.trainers import SyncMultiGPUTrainerReplicated
+from tensorpack.train.trainers import *
 from tensorpack.utils import logger
 from tensorpack.input_source.input_source import QueueInput
 from data_load import Net1DataFlow
@@ -53,9 +48,9 @@ def train(args, logdir):
 
     if args.gpu:
         os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
-        train_conf.nr_tower = len(args.gpu.split(','))
+        #train_conf.nr_tower = len(args.gpu.split(','))
 
-    trainer = SyncMultiGPUTrainerReplicated(hp.train1.num_gpu)
+    trainer = SimpleTrainer()
 
     launch_train_with_config(train_conf, trainer=trainer)
 
@@ -73,7 +68,7 @@ if __name__ == '__main__':
     hp.set_hparam_yaml(args.case)
     logdir_train1 = '{}/train1'.format(hp.logdir)
 
-    print('case: {}, logdir: {}'.format(args.case, logdir_train1))
+    print('case: {}, logdir: {}'.format(args.case, args.case, logdir_train1))
 
     train(args, logdir=logdir_train1)
 
