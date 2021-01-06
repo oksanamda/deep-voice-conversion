@@ -57,11 +57,19 @@ def convert(predictor, df):
     y_spec = np.power(y_spec, hp.convert.emphasis_magnitude)
 
     # Spectrogram to waveform
-    audio = np.array(map(lambda spec: spec2wav(spec.T, hp.default.n_fft, hp.default.win_length, hp.default.hop_length,
-                                               hp.default.n_iter), pred_spec))
-    y_audio = np.array(map(lambda spec: spec2wav(spec.T, hp.default.n_fft, hp.default.win_length, hp.default.hop_length,
-                                                 hp.default.n_iter), y_spec))
-
+    # audio = np.array(map(lambda spec: spec2wav(spec.T, hp.default.n_fft, hp.default.win_length, hp.default.hop_length,
+    #                                            hp.default.n_iter), pred_spec))
+    # y_audio = np.array(map(lambda spec: spec2wav(spec.T, hp.default.n_fft, hp.default.win_length, hp.default.hop_length,
+    #                                              hp.default.n_iter), y_spec))
+  
+# Spectrogram to waveform
+    audioWavList = []
+    y_audioWavList = []
+    for i in range(len(pred_spec)):
+      audioWavList.append(spec2wav(pred_spec[i].T, hp.default.n_fft, hp.default.win_length, hp.default.hop_length, hp.default.n_iter))
+      y_audioWavList.append(spec2wav(y_spec[i].T, hp.default.n_fft, hp.default.win_length, hp.default.hop_length, hp.default.n_iter))
+    audio = np.array(audioWavList)
+    y_audio = np.array(y_audioWavList)
     # Apply inverse pre-emphasis
     audio = inv_preemphasis(audio, coeff=hp.default.preemphasis)
     y_audio = inv_preemphasis(y_audio, coeff=hp.default.preemphasis)
